@@ -31,7 +31,7 @@ import albumentations as A
 def visualize(**images):
     """PLot images in one row."""
     n = len(images)
-    plt.figure(figsize=(18, 10))
+    plt.figure(figsize=(16, 10))
     for i, (name, image) in enumerate(images.items()):
         plt.subplot(1, n, i + 1)
         plt.xticks([])
