@@ -7,8 +7,8 @@ Original file is located at
     https://colab.research.google.com/drive/1k1fKiAqa9jJFbO_in36y4-1Ke-taTA5D
 """
 
-import warnings
-warnings.filterwarnings("ignore")
+import logging
+logging.getLogger('tensorflow').disabled = True
 
 # Install required libs
 import os
