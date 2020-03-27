@@ -226,7 +226,7 @@ def segment_image(uploaded):
       augmentation=get_validation_augmentation
     )
 
-    minimum_size_bubble=8
+    minimum_size_bubble=6
 
     image= test_dataset[0]
     image = np.expand_dims(image, axis=0)
