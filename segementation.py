@@ -27,6 +27,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import albumentations as A
 
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
+
 # helper function for data visualization
 def visualize(**images):
     """PLot images in one row."""
@@ -134,8 +136,6 @@ def get_preprocessing(preprocessing_fn):
         A.Lambda(image=preprocessing_fn),
     ]
     return A.Compose(_transform)
-
-warnings.filterwarnings("ignore")
 
 BACKBONE = 'efficientnetb3'
 preprocess_input = sm.get_preprocessing(BACKBONE)
