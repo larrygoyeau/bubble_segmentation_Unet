@@ -135,6 +135,8 @@ def get_preprocessing(preprocessing_fn):
     ]
     return A.Compose(_transform)
 
+warnings.filterwarnings("ignore")
+
 BACKBONE = 'efficientnetb3'
 preprocess_input = sm.get_preprocessing(BACKBONE)
 LR = 0.0001
