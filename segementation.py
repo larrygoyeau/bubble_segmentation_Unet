@@ -27,8 +27,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 import albumentations as A
 
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
-
 # helper function for data visualization
 def visualize(**images):
     """PLot images in one row."""
