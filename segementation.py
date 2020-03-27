@@ -104,11 +104,15 @@ class Dataset:
 def round_clip_0_1(x, **kwargs):
     return x.round().clip(0, 1)
 
+
 def get_validation_augmentation(I,J):
     """Add paddings to make image shape divisible by 32"""
-    test_transform = [A.PadIfNeeded(384, 544, border_mode=0)]
     if 256<I and 512<J:
       test_transform = [A.PadIfNeeded(384, 544, border_mode=0)]
+    elif 512<J:
+      test_transform = [A.PadIfNeeded(2**(int(np.log(I)/np.log(2))+1), 544, border_mode=0)]
+    elif 256<I:
+      test_transform = [A.PadIfNeeded(384, 2**(int(np.log(J)/np.log(2))+1), border_mode=0)]
     elif np.log(I)/np.log(2)%1==0 and np.log(J)/np.log(2)%1==0:
       test_transform = [A.PadIfNeeded(I, J, border_mode=0)]
     elif np.log(I)/np.log(2)%1==0:
