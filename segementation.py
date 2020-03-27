@@ -7,6 +7,9 @@ Original file is located at
     https://colab.research.google.com/drive/1k1fKiAqa9jJFbO_in36y4-1Ke-taTA5D
 """
 
+import warnings
+warnings.filterwarnings("ignore")
+
 # Install required libs
 import os
 os.system('pip install -U git+https://github.com/albu/albumentations')
