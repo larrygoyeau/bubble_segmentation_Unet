@@ -17,6 +17,8 @@ os.system('git clone https://github.com/qubvel/segmentation_models')
 os.system('pip install -U efficientnet')
 os.system('pip install image-classifiers==1.0.0b1')
 
+%tensorflow_version 1.x
+
 from PIL import Image
 from io import BytesIO
 from google.colab import files
