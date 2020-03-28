@@ -12,7 +12,7 @@ logging.getLogger('tensorflow').disabled = True
 
 # Install required libs
 import os
-os.system('%tensorflow_version 1.x')
+%tensorflow_version 1.x
 os.system('pip install -U git+https://github.com/albu/albumentations')
 os.system('git clone https://github.com/qubvel/segmentation_models')
 os.system('pip install -U efficientnet')
