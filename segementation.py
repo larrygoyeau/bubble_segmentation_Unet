@@ -193,7 +193,7 @@ def uncolor_bubble(mask,i,j,I,J,color_liquide,color):
     if j<J-1:
       uncolor_bubble(mask,i,j+1,I,J,color_liquide,color)
     
-# The fonuction bellow will color each bubbles
+# The fonuction bellow will color each bubbles and return the size of each bubbles
 
 def foam(mask,color_air,threshold,color_liquide):
   I=len(mask)
