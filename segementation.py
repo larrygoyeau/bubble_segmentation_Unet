@@ -200,6 +200,7 @@ def foam(mask,color_air,threshold,color_liquide):
   J=len(mask[0])
   bubble=0
   n=0
+  size_of_bubbles=[]
   for i in range(I):
     for j in range(J):
       if all(mask[i,j]==color_air):
@@ -211,10 +212,14 @@ def foam(mask,color_air,threshold,color_liquide):
         else:
           bubble=bubble+40
           n=n+1
+          size_of_bubbles=size_of_bubbles+[size_bubble]
   print("Number of detected bubbles "+str(n))
+  return(size_of_bubbles)
 
 def segment_image(uploaded):
-
+  
+  size_of_bubbles=[]
+  
   for image_uploaded in uploaded:
     print('\n')
     image=Image.open(BytesIO(uploaded[image_uploaded]))
@@ -231,7 +236,7 @@ def segment_image(uploaded):
     image= test_dataset[0]
     image = np.expand_dims(image, axis=0)
     pr_mask = model.predict(image).round()[0]
-    foam(pr_mask[:,:-1], color_air=[1,0,0],threshold=minimum_size_bubble,color_liquide=[0,1,0])
+    size_of_bubbles=size_of_bubbles+foam(pr_mask[:,:-1], color_air=[1,0,0],threshold=minimum_size_bubble,color_liquide=[0,1,0])
 
     image=denormalize(image.squeeze())
     I=len(image)
@@ -244,3 +249,4 @@ def segment_image(uploaded):
     
     visualize(mask_plus_image=denormalize(mask_plus_image.squeeze()))
     cv2.imwrite('mask_plus_'+image_uploaded, mask_plus_image)
+  return(size_of_bubbles)
