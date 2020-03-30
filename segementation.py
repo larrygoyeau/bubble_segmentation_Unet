@@ -207,7 +207,7 @@ def foam(mask,color_air,threshold,color_liquide):
         mask[0,0][0]=0
         color_bubble(mask,i,j,I,J,bubble,color_air)
         size_bubble=mask[0,0][0]
-        if size_bubble<threshold:
+        if len(size_of_bubbles)>3 and size_bubble<threshold*sum(size_of_bubbles)/len(size_of_bubbles):
           uncolor_bubble(mask,i,j,I,J,color_liquide,bubble)
         else:
           bubble=bubble+40
@@ -231,12 +231,10 @@ def segment_image(uploaded):
       augmentation=get_validation_augmentation
     )
 
-    minimum_size_bubble=6
-
     image= test_dataset[0]
     image = np.expand_dims(image, axis=0)
     pr_mask = model.predict(image).round()[0]
-    size_of_bubbles=size_of_bubbles+foam(pr_mask[:,:-1], color_air=[1,0,0],threshold=minimum_size_bubble,color_liquide=[0,1,0])
+    size_of_bubbles=size_of_bubbles+foam(pr_mask[:,:-1], color_air=[1,0,0],threshold=0.01,color_liquide=[0,1,0])
 
     image=denormalize(image.squeeze())
     I=len(image)
