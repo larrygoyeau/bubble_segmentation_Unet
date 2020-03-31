@@ -79,9 +79,9 @@ class Dataset:
         # read data
         if self.images_fps!=None:
           image = cv2.imread(self.images_fps[i])
-          shape_image=image.shape
         else:
           image = self.image
+        shape_image=image.shape
         p=255/(image.max()-image.min())
         image=(image-image.min())*p
         image= image.astype(np.uint8)
