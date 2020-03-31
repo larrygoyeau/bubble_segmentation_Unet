@@ -240,11 +240,14 @@ def segment_image(uploaded):
     I=len(image)
     J=len(image[0])
     mask_plus_image=pr_mask.copy()
+    mask=pr_mask.copy()
     for i in range(I):
       for j in range(J):
         if pr_mask[i,j][2]==1.0 or pr_mask[i,j][1]==1.0 or all(pr_mask[i,j]==0):
           mask_plus_image[i,j]=image[i,j]*255
+          mask[i,j]=0
     
     visualize(mask_plus_image=denormalize(mask_plus_image.squeeze()))
     cv2.imwrite('mask_plus_'+image_uploaded, mask_plus_image)
+    cv2.imwrite('mask_of_'+image_uploaded, mask)
   return(size_of_bubbles)
