@@ -196,11 +196,12 @@ def uncolor_bubble(mask,i,j,I,J,color_liquide,random_color):
     
 # The fonuction bellow will color each bubbles and return the size of each bubbles
 
-def foam(mask,color_air,threshold,color_liquide):
+def foam(mask,color_air,threshold,color_liquide,image_name):
+  file = open(image_name[:-4]+".txt","w")
+  file.write("Bubble index and its size\n")
   I=len(mask)
   J=len(mask[0])
   bubble=0
-  n=0
   size_of_bubbles=[]
   for i in range(I):
     for j in range(J):
@@ -208,14 +209,15 @@ def foam(mask,color_air,threshold,color_liquide):
         mask[0,0][0]=0
         random_color=[random.randint(50, 225),random.randint(50, 225),random.randint(50, 225)]
         color_bubble(mask,i,j,I,J,random_color,color_air)
-        size_bubble=mask[0,0][0]
+        size_bubble=int(mask[0,0][0])
         if len(size_of_bubbles)>3 and size_bubble<threshold*sum(size_of_bubbles)/len(size_of_bubbles):
           uncolor_bubble(mask,i,j,I,J,color_liquide,random_color)
         else:
-          bubble=bubble+40
-          n=n+1
+          bubble=bubble+1
           size_of_bubbles=size_of_bubbles+[size_bubble]
-  print("Number of detected bubbles "+str(n))
+          file.write(str(bubble)+"  "+str(size_bubble)+"\n")
+  file.close() 
+  print("Number of detected bubbles "+str(bubble))
   return(size_of_bubbles)
 
 def segment_image(uploaded):
@@ -236,7 +238,7 @@ def segment_image(uploaded):
     image= test_dataset[0]
     image = np.expand_dims(image, axis=0)
     pr_mask = model.predict(image).round()[0]
-    size_of_bubbles=size_of_bubbles+foam(pr_mask[:,:-1], color_air=[1,0,0],threshold=0.01,color_liquide=[0,1,0])
+    size_of_bubbles=size_of_bubbles+foam(pr_mask[:,:-1], color_air=[1,0,0],threshold=0.01,color_liquide=[0,1,0], image_name=os.listdir(x_test_dir)[i])
 
     image=denormalize(image.squeeze())
     I=len(image)
