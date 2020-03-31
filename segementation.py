@@ -79,6 +79,7 @@ class Dataset:
         # read data
         if self.images_fps!=None:
           image = cv2.imread(self.images_fps[i])
+          shape_image=image.shape
         else:
           image = self.image
         p=255/(image.max()-image.min())
@@ -97,7 +98,7 @@ class Dataset:
             sample = self.preprocessing(image=image)
             image= sample['image']
             
-        return image
+        return image, shape_image
         
     def __len__(self):
         return len(self.ids_image)
@@ -108,20 +109,7 @@ def round_clip_0_1(x, **kwargs):
 
 def get_validation_augmentation(I,J):
     """Add paddings to make image shape divisible by 32"""
-    if 256<I and 512<J:
-      test_transform = [A.PadIfNeeded(384, 544, border_mode=0)]
-    elif 512<J:
-      test_transform = [A.PadIfNeeded(2**(int(np.log(I)/np.log(2))+1), 544, border_mode=0)]
-    elif 256<I:
-      test_transform = [A.PadIfNeeded(384, 2**(int(np.log(J)/np.log(2))+1), border_mode=0)]
-    elif np.log(I)/np.log(2)%1==0 and np.log(J)/np.log(2)%1==0:
-      test_transform = [A.PadIfNeeded(I, J, border_mode=0)]
-    elif np.log(I)/np.log(2)%1==0:
-      test_transform = [A.PadIfNeeded(I, 2**(int(np.log(J)/np.log(2))+1), border_mode=0)]
-    elif np.log(J)/np.log(2)%1==0:
-      test_transform = [A.PadIfNeeded( 2**(int(np.log(I)/np.log(2))+1), J, border_mode=0)]
-    else:
-      test_transform = [A.PadIfNeeded(2**(int(np.log(I)/np.log(2))+1), 2**(int(np.log(J)/np.log(2))+1), border_mode=0)]
+    test_transform = [A.PadIfNeeded(384, 544, border_mode=0)]
     return A.Compose(test_transform)
 
 def get_preprocessing(preprocessing_fn):
@@ -235,7 +223,7 @@ def segment_image(uploaded):
       augmentation=get_validation_augmentation
     )
 
-    image= test_dataset[0]
+    image, shape_image= test_dataset[0]
     image = np.expand_dims(image, axis=0)
     pr_mask = model.predict(image).round()[0]
     size_of_bubbles=size_of_bubbles+foam(pr_mask[:,:-1], color_air=[1,0,0],threshold=0.01,color_liquide=[0,1,0], image_name=image_uploaded)
@@ -250,6 +238,11 @@ def segment_image(uploaded):
         if pr_mask[i,j][2]==1.0 or pr_mask[i,j][1]==1.0 or all(pr_mask[i,j]==0):
           mask_plus_image[i,j]=image[i,j]*255
           mask[i,j]=0
+    
+    mask_plus_image=mask_plus_image[int((len(mask_plus_image)-shape_image[0])/2):int((len(mask_plus_image)-shape_image[0])/2)+shape_image[0]]
+    mask_plus_image=mask_plus_image[:,int((len(mask_plus_image[0])-shape_image[1])/2):int((len(mask_plus_image[0])-shape_image[1])/2)+shape_image[1]]
+    mask=mask[int((len(mask)-shape_image[0])/2):int((len(mask)-shape_image[0])/2)+shape_image[0]]
+    mask=mask[:,int((len(mask[0])-shape_image[1])/2):int((len(mask[0])-shape_image[1])/2)+shape_image[1]]
     
     visualize(mask_plus_image=denormalize(mask_plus_image.squeeze()))
     cv2.imwrite('mask_plus_'+image_uploaded, mask_plus_image)
