@@ -171,7 +171,7 @@ sys.setrecursionlimit(100000)
 def color_bubble(mask,i,j,I,J,bubble,color):
   if all(mask[i,j]==color) and (i,j)!=(0,0):
     mask[0,0][0]=mask[0,0][0]+1   #size bubble
-    mask[i,j]=[color%253+20, color%85+60, color%170+40]
+    mask[i,j]=[bubble%253+20, bubble%85+60, bubble%170+40]
     if 0<j:
       color_bubble(mask,i,j-1,I,J,bubble,color)
     if i<I-1:
