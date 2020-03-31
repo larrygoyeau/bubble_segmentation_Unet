@@ -234,7 +234,7 @@ def segment_image(uploaded):
     image= test_dataset[0]
     image = np.expand_dims(image, axis=0)
     pr_mask = model.predict(image).round()[0]
-    size_of_bubbles=size_of_bubbles+foam(pr_mask[:,:-1], color_air=[1,0,0],threshold=0.015,color_liquide=[0,1,0])
+    size_of_bubbles=size_of_bubbles+foam(pr_mask[:,:-1], color_air=[1,0,0],threshold=0.01,color_liquide=[0,1,0])
 
     image=denormalize(image.squeeze())
     I=len(image)
