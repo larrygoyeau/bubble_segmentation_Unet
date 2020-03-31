@@ -17,6 +17,7 @@ os.system('git clone https://github.com/qubvel/segmentation_models')
 os.system('pip install -U efficientnet')
 os.system('pip install image-classifiers==1.0.0b1')
 
+import random
 from PIL import Image
 from io import BytesIO
 from google.colab import files
@@ -168,30 +169,30 @@ model.compile(optim, total_loss)
 import sys
 sys.setrecursionlimit(100000)
 
-def color_bubble(mask,i,j,I,J,bubble,color):
+def color_bubble(mask,i,j,I,J,random_color,color):
   if all(mask[i,j]==color) and (i,j)!=(0,0):
     mask[0,0][0]=mask[0,0][0]+1   #size bubble
-    mask[i,j]=[bubble%253+20, bubble%85+60, bubble%170+40]
+    mask[i,j]=random_color
     if 0<j:
-      color_bubble(mask,i,j-1,I,J,bubble,color)
+      color_bubble(mask,i,j-1,I,J,random_color,color)
     if i<I-1:
-      color_bubble(mask,i+1,j,I,J,bubble,color)
+      color_bubble(mask,i+1,j,I,J,random_color,color)
     if 0<i:
-      color_bubble(mask,i-1,j,I,J,bubble,color)
+      color_bubble(mask,i-1,j,I,J,random_color,color)
     if j<J-1:
-      color_bubble(mask,i,j+1,I,J,bubble,color)
+      color_bubble(mask,i,j+1,I,J,random_color,color)
     
-def uncolor_bubble(mask,i,j,I,J,color_liquide,color):
-  if all(mask[i,j]==[color%253+20, color%85+60, color%170+40]):
+def uncolor_bubble(mask,i,j,I,J,color_liquide,random_color):
+  if all(mask[i,j]==random_color):
     mask[i,j]=color_liquide
     if 0<j:
-      uncolor_bubble(mask,i,j-1,I,J,color_liquide,color)
+      uncolor_bubble(mask,i,j-1,I,J,color_liquide,random_color)
     if i<I-1:
-      uncolor_bubble(mask,i+1,j,I,J,color_liquide,color)
+      uncolor_bubble(mask,i+1,j,I,J,color_liquide,random_color)
     if 0<i:
-      uncolor_bubble(mask,i-1,j,I,J,color_liquide,color)
+      uncolor_bubble(mask,i-1,j,I,J,color_liquide,random_color)
     if j<J-1:
-      uncolor_bubble(mask,i,j+1,I,J,color_liquide,color)
+      uncolor_bubble(mask,i,j+1,I,J,color_liquide,random_color)
     
 # The fonuction bellow will color each bubbles and return the size of each bubbles
 
@@ -205,10 +206,11 @@ def foam(mask,color_air,threshold,color_liquide):
     for j in range(J):
       if all(mask[i,j]==color_air):
         mask[0,0][0]=0
-        color_bubble(mask,i,j,I,J,bubble,color_air)
+        random_color=[random.randint(50, 225),random.randint(50, 225),random.randint(50, 225)]
+        color_bubble(mask,i,j,I,J,random_color,color_air)
         size_bubble=mask[0,0][0]
         if len(size_of_bubbles)>3 and size_bubble<threshold*sum(size_of_bubbles)/len(size_of_bubbles):
-          uncolor_bubble(mask,i,j,I,J,color_liquide,bubble)
+          uncolor_bubble(mask,i,j,I,J,color_liquide,random_color)
         else:
           bubble=bubble+40
           n=n+1
