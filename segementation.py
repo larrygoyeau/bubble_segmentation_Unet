@@ -186,7 +186,7 @@ def uncolor_bubble(mask,i,j,I,J,color_liquide,random_color):
     
 # The fonuction bellow will color each bubbles and return the size of each bubbles
 
-def foam(mask,color_air,threshold,color_liquide,image_name):
+def foam(mask,color_air,threshold,color_liquide,image_name,remove_bubbles_on_the_border):
   file = open(image_name[:-4]+".txt","w")
   file.write("Bubble index and its size\n")
   I=len(mask)
