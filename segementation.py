@@ -159,6 +159,8 @@ sys.setrecursionlimit(100000)
 
 def color_bubble(mask,i,j,I,J,random_color,color):
   if all(mask[i,j]==color) and (i,j)!=(0,0):
+    if i==I-1 or j==J-1 or i==0 or j==0:
+      mask[0,0][1]=mask[0,0][1]+1 #number of pixel in contacte with the border
     mask[0,0][0]=mask[0,0][0]+1   #size bubble
     mask[i,j]=random_color
     if 0<j:
@@ -194,11 +196,14 @@ def foam(mask,color_air,threshold,color_liquide,image_name):
   for i in range(I):
     for j in range(J):
       if all(mask[i,j]==color_air):
-        mask[0,0][0]=0
+        mask[0,0][0]=0 #size of bubbles
+        mask[0,0][1]=0 #number of pixel in contacte with the border
         random_color=[random.randint(50, 225),random.randint(50, 225),random.randint(50, 225)]
         color_bubble(mask,i,j,I,J,random_color,color_air)
         size_bubble=int(mask[0,0][0])
         if len(size_of_bubbles)>3 and size_bubble<threshold*sum(size_of_bubbles)/len(size_of_bubbles):
+          uncolor_bubble(mask,i,j,I,J,color_liquide,random_color)
+        elif mask[0,0][1]>0 and remove_bubbles_on_the_border:
           uncolor_bubble(mask,i,j,I,J,color_liquide,random_color)
         else:
           bubble=bubble+1
@@ -208,7 +213,7 @@ def foam(mask,color_air,threshold,color_liquide,image_name):
   print("Number of detected bubbles "+str(bubble))
   return(size_of_bubbles)
 
-def segment_image(uploaded):
+def segment_image(uploaded,remove_bubbles_on_the_border):
   
   size_of_bubbles=[]
   
@@ -226,8 +231,15 @@ def segment_image(uploaded):
     image, shape_image= test_dataset[0]
     image = np.expand_dims(image, axis=0)
     pr_mask = model.predict(image).round()[0]
-    size_of_bubbles=size_of_bubbles+foam(pr_mask[:,:-1], color_air=[1,0,0],threshold=0.015,color_liquide=[0,1,0], image_name=image_uploaded)
-
+    
+    image=image[0]
+    image=image[int((len(image)-shape_image[0])/2):int((len(image)-shape_image[0])/2)+shape_image[0]]
+    image=image[:,int((len(image[0])-shape_image[1])/2):int((len(image[0])-shape_image[1])/2)+shape_image[1]]
+    pr_mask=pr_mask[int((len(pr_mask)-shape_image[0])/2):int((len(pr_mask)-shape_image[0])/2)+shape_image[0]]
+    pr_mask=pr_mask[:,int((len(pr_mask[0])-shape_image[1])/2):int((len(pr_mask[0])-shape_image[1])/2)+shape_image[1]]
+    
+    size_of_bubbles=size_of_bubbles+foam(pr_mask[:,:-1], color_air=[1,0,0],threshold=0.015,color_liquide=[0,1,0], image_name=image_uploaded, remove_bubbles_on_the_border=remove_bubbles_on_the_border)
+    
     image=denormalize(image.squeeze())
     I=len(image)
     J=len(image[0])
@@ -238,11 +250,6 @@ def segment_image(uploaded):
         if pr_mask[i,j][2]==1.0 or pr_mask[i,j][1]==1.0 or all(pr_mask[i,j]==0):
           mask_plus_image[i,j]=image[i,j]*255
           mask[i,j]=0
-    
-    mask_plus_image=mask_plus_image[int((len(mask_plus_image)-shape_image[0])/2):int((len(mask_plus_image)-shape_image[0])/2)+shape_image[0]]
-    mask_plus_image=mask_plus_image[:,int((len(mask_plus_image[0])-shape_image[1])/2):int((len(mask_plus_image[0])-shape_image[1])/2)+shape_image[1]]
-    mask=mask[int((len(mask)-shape_image[0])/2):int((len(mask)-shape_image[0])/2)+shape_image[0]]
-    mask=mask[:,int((len(mask[0])-shape_image[1])/2):int((len(mask[0])-shape_image[1])/2)+shape_image[1]]
     
     visualize(mask_plus_image=denormalize(mask_plus_image.squeeze()))
     cv2.imwrite('mask_plus_'+image_uploaded, mask_plus_image)
