@@ -184,6 +184,15 @@ def uncolor_bubble(mask,i,j,I,J,color_liquide,random_color):
     if j<J-1:
       uncolor_bubble(mask,i,j+1,I,J,color_liquide,random_color)
     
+# The fonuction bellow select a good color for bubble
+
+def the_color(random_color,threshold):
+  if random_color[0]-random_color[1]<threshold and random_color[0]-random_color[2]<threshold:
+    random_color=[random.randint(4, 255),random.randint(4, 255),random.randint(4, 255)]
+    return(the_color(random_color,threshold))
+  else:
+    return(random_color)
+    
 # The fonuction bellow will color each bubbles and return the size of each bubbles
 
 def foam(mask,color_air,threshold,color_liquide,image_name,remove_bubbles_on_the_border):
@@ -198,7 +207,8 @@ def foam(mask,color_air,threshold,color_liquide,image_name,remove_bubbles_on_the
       if all(mask[i,j]==color_air):
         mask[0,0][0]=0 #size of bubbles
         mask[0,0][1]=0 #number of pixel in contacte with the border
-        random_color=[random.randint(30, 185),random.randint(30, 185),random.randint(30, 185)]
+        random_color=[random.randint(4, 255),random.randint(4, 255),random.randint(4, 255)]
+        random_color=the_color(random_color,50)
         color_bubble(mask,i,j,I,J,random_color,color_air)
         size_bubble=int(mask[0,0][0])
         if len(size_of_bubbles)>3 and size_bubble<threshold*sum(size_of_bubbles)/len(size_of_bubbles):
