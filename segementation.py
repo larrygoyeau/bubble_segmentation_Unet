@@ -198,7 +198,7 @@ def foam(mask,color_air,threshold,color_liquide,image_name,remove_bubbles_on_the
       if all(mask[i,j]==color_air):
         mask[0,0][0]=0 #size of bubbles
         mask[0,0][1]=0 #number of pixel in contacte with the border
-        random_color=[random.randint(50, 225),random.randint(50, 225),random.randint(50, 225)]
+        random_color=[random.randint(30, 185),random.randint(30, 185),random.randint(30, 185)]
         color_bubble(mask,i,j,I,J,random_color,color_air)
         size_bubble=int(mask[0,0][0])
         if len(size_of_bubbles)>3 and size_bubble<threshold*sum(size_of_bubbles)/len(size_of_bubbles):
