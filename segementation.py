@@ -15,6 +15,7 @@ import os
 os.system('pip install -U git+https://github.com/albu/albumentations')
 os.system('pip install -U efficientnet')
 os.system('pip install image-classifiers==1.0.0b1')
+os.system('git clone https://github.com/qubvel/segmentation_models')
 
 import random
 from PIL import Image
@@ -25,6 +26,7 @@ import keras
 import numpy as np
 import matplotlib.pyplot as plt
 import albumentations as A
+import segmentation_models as sm
 
 # helper function for data visualization
 def visualize(**images):
@@ -134,9 +136,6 @@ LR = 0.0001
 n_classes =3 # case for binary and multiclass segmentation
 activation = 'softmax'
 
-#create model
-model = sm.Unet(BACKBONE, classes=n_classes, activation=activation)
-
 # define optimizer
 optim = keras.optimizers.Adam(LR)
 
@@ -233,8 +232,7 @@ def segment_image(uploaded,remove_bubbles_on_the_border):
     image = np.asarray(image)
 
     test_dataset = Dataset(
-      image=image, 
-      preprocessing=get_preprocessing(preprocess_input),
+      image=image,
       augmentation=get_validation_augmentation
     )
 
