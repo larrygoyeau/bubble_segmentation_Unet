@@ -233,6 +233,7 @@ def segment_image(uploaded,remove_bubbles_on_the_border):
 
     test_dataset = Dataset(
       image=image,
+      preprocessing=get_preprocessing(preprocess_input),
       augmentation=get_validation_augmentation
     )
 
