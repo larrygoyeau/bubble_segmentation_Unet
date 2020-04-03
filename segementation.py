@@ -13,7 +13,6 @@ logging.getLogger('tensorflow').disabled = True
 # Install required libs
 import os
 os.system('pip install -U git+https://github.com/albu/albumentations')
-os.system('git clone https://github.com/qubvel/segmentation_models')
 os.system('pip install -U efficientnet')
 os.system('pip install image-classifiers==1.0.0b1')
 
@@ -21,7 +20,6 @@ import random
 from PIL import Image
 from io import BytesIO
 from google.colab import files
-import segmentation_models as sm
 import cv2
 import keras
 import numpy as np
@@ -142,17 +140,19 @@ model = sm.Unet(BACKBONE, classes=n_classes, activation=activation)
 # define optimizer
 optim = keras.optimizers.Adam(LR)
 
-# Segmentation models losses can be combined together by '+' and scaled by integer or float factor
-dice_loss = sm.losses.DiceLoss()
-focal_loss = sm.losses.CategoricalFocalLoss()
-total_loss = dice_loss + (1 * focal_loss)
+from keras.models import model_from_json
+
+json_file = open('/content/bubble_segmentation/best_model.json', 'r')
+loaded_model_json = json_file.read()
+json_file.close()
+model = model_from_json(loaded_model_json)
 
 # load weights into new model, you can change the path if you don't use colab
 model.load_weights("/content/bubble_segmentation/best_model.h5")
 print("Loaded model from disk")
 
 # compile keras model with defined optimozer, loss and metrics
-model.compile(optim, total_loss)
+model.compile(optim,loss='categorical_crossentropy')
 
 import sys
 sys.setrecursionlimit(100000)
