@@ -12,10 +12,10 @@ logging.getLogger('tensorflow').disabled = True
 
 # Install required libs
 import os
-os.system('pip install -U git+https://github.com/albu/albumentations')
-os.system('pip install -U efficientnet')
-os.system('pip install image-classifiers==1.0.0b1')
-os.system('git clone https://github.com/qubvel/segmentation_models')
+os.system('pip install albumentations==0.4.5')
+os.system('pip install -U efficientnet==1.0.0')
+os.system('pip install image-classifiers==1.0.0')
+os.system('pip install -U segmentation-models==1.0.0')
 
 import random
 from PIL import Image
