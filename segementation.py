@@ -81,10 +81,10 @@ class Dataset:
           image = cv2.imread(self.images_fps[i])
         else:
           image = self.image
-        if len(image)>384:
-          image=image[:384]
-        if len(image[0])>544:
-          image=image[:,:544]
+        if len(image)>2**11:
+          image=image[:2**11,:]
+        if len(image[0])>2**11:
+          image=image[:,:2**11]
         shape_image=image.shape
         p=255/(image.max()-image.min())
         image=(image-image.min())*p
@@ -112,8 +112,11 @@ def round_clip_0_1(x, **kwargs):
 
 
 def get_validation_augmentation(I,J):
-    """Add paddings to make image shape divisible by 32"""
-    test_transform = [A.PadIfNeeded(384, 544, border_mode=0)]
+    """Add paddings"""
+    if I>384 and J>544:
+      test_transform = [A.PadIfNeeded(2**(int(np.log(I-1)/np.log(2))+1), 2**(int(np.log(J-1)/np.log(2))+1), border_mode=0)]
+    else:
+      test_transform = [A.PadIfNeeded(384, 544, border_mode=0)]
     return A.Compose(test_transform)
 
 def get_preprocessing(preprocessing_fn):
