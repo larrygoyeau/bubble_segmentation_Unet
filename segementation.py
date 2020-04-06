@@ -157,8 +157,11 @@ print("Loaded model from disk")
 # compile keras model with defined optimozer, loss and metrics
 model.compile(optim,loss='categorical_crossentropy')
 
+import resource
 import sys
-sys.setrecursionlimit(100000)
+
+resource.setrlimit(resource.RLIMIT_STACK, [0x10000000, resource.RLIM_INFINITY])
+sys.setrecursionlimit(0x100000)
 
 def color_bubble(mask,i,j,I,J,random_color,color):
   if all(mask[i,j]==color) and (i,j)!=(0,0):
