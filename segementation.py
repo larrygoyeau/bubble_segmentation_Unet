@@ -81,6 +81,10 @@ class Dataset:
           image = cv2.imread(self.images_fps[i])
         else:
           image = self.image
+        if len(image)>384:
+          image=image[:384]
+        if len(image[0])>544:
+          image=image[:,:544]
         shape_image=image.shape
         p=255/(image.max()-image.min())
         image=(image-image.min())*p
