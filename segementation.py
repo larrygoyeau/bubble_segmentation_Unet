@@ -238,8 +238,10 @@ def segment_image(uploaded,remove_bubbles_on_the_border):
   
   for image_uploaded in uploaded:
     print('\n')
-    image=Image.open(BytesIO(uploaded[image_uploaded]))
-    image = np.asarray(image)
+    path=os.path.join('/content/', image_name)
+    image=cv2.imread(path)
+    path=path.replace(' ', '\ ')
+    os.system('rm '+path)
 
     test_dataset = Dataset(
       image=image,
