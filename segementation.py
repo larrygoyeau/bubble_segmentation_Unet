@@ -240,7 +240,6 @@ def segment_image(uploaded,remove_bubbles_on_the_border):
     print('\n')
     image=Image.open(BytesIO(uploaded[image_uploaded]))
     image = np.asarray(image)
-    print(image)
     path=os.path.join('/content/', image_uploaded)
     path=path.replace(' ', '\ ')
     os.system('rm '+path)
@@ -252,6 +251,7 @@ def segment_image(uploaded,remove_bubbles_on_the_border):
     )
 
     image, shape_image= test_dataset[0]
+    print(image)
     image = np.expand_dims(image, axis=0)
     pr_mask = model.predict(image).round()[0]
     
