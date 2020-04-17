@@ -240,6 +240,7 @@ def segment_image(uploaded,remove_bubbles_on_the_border):
     print('\n')
     image=Image.open(BytesIO(uploaded[image_uploaded]))
     image = np.asarray(image)
+    print(image)
     path=os.path.join('/content/', image_uploaded)
     path=path.replace(' ', '\ ')
     os.system('rm '+path)
