@@ -238,7 +238,7 @@ def segment_image(uploaded,remove_bubbles_on_the_border):
   
   for image_uploaded in uploaded:
     print('\n')
-    path=os.path.join('/content/', image_name)
+    path=os.path.join('/content/', image_uploaded)
     image=cv2.imread(path)
     path=path.replace(' ', '\ ')
     os.system('rm '+path)
