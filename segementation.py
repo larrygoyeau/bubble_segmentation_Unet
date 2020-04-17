@@ -251,10 +251,9 @@ def segment_image(uploaded,remove_bubbles_on_the_border):
     )
 
     image, shape_image= test_dataset[0]
-    print(image)
     image = np.expand_dims(image, axis=0)
     pr_mask = model.predict(image).round()[0]
-    
+    print(pr_mask)
     image=image[0]
     image=image[int((len(image)-shape_image[0])/2):int((len(image)-shape_image[0])/2)+shape_image[0]]
     image=image[:,int((len(image[0])-shape_image[1])/2):int((len(image[0])-shape_image[1])/2)+shape_image[1]]
