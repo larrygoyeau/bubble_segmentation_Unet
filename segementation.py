@@ -113,7 +113,7 @@ def round_clip_0_1(x, **kwargs):
 
 def get_validation_augmentation(I,J):
     """Add paddings"""
-    if I>384 and J>544:
+    if I>384 or J>544:
       test_transform = [A.PadIfNeeded(2**(int(np.log(I-1)/np.log(2))+1), 2**(int(np.log(J-1)/np.log(2))+1), border_mode=0)]
     else:
       test_transform = [A.PadIfNeeded(384, 544, border_mode=0)]
@@ -276,6 +276,6 @@ def segment_image(uploaded,remove_bubbles_on_the_border):
           mask[i,j]=0
     
     visualize(mask_plus_image=denormalize(mask_plus_image.squeeze()))
-    cv2.imwrite('mask_plus_'+image_uploaded, mask_plus_image)
-    cv2.imwrite('mask_of_'+image_uploaded, mask)
+    cv2.imwrite('mask_plus_'+image_uploaded[:-3]+'png', mask_plus_image)
+    cv2.imwrite('mask_of_'+image_uploaded[:-3]+'png', mask)
   return(size_of_bubbles)
