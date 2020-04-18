@@ -154,7 +154,7 @@ json_file.close()
 model = model_from_json(loaded_model_json)
 
 # load weights into new model, you can change the path if you don't use colab
-model.load_weights("/content/bubble_segmentation/best_model.h5")
+model.load_weights("/content/bubble_segmentation_Unet/best_model.h5")
 print("Loaded model from disk")
 
 # compile keras model with defined optimozer, loss and metrics
