@@ -148,7 +148,7 @@ optim = keras.optimizers.Adam(LR)
 
 from keras.models import model_from_json
 
-json_file = open('/content/bubble_segmentation/best_model.json', 'r')
+json_file = open('/content/bubble_segmentation_Unet/best_model.json', 'r')
 loaded_model_json = json_file.read()
 json_file.close()
 model = model_from_json(loaded_model_json)
