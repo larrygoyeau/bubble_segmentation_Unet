@@ -18,8 +18,6 @@ os.system('pip install image-classifiers==1.0.0')
 os.system('pip install -U segmentation-models==1.0.0')
 
 import random
-from PIL import Image
-from io import BytesIO
 from google.colab import files
 import cv2
 import keras
